@@ -1,18 +1,40 @@
-import React from 'react'
+import React, {useState} from 'react'
 
 // Suggested initial states
+
 const initialMessage = ''
 const initialEmail = ''
 const initialSteps = 0
 const initialIndex = 4 // the index the "B" is at
+const rowLength = 3
+
+
 
 export default function AppFunctional(props) {
+  const [currIndex,setCurrIndex] = useState(initialIndex)
   // THE FOLLOWING HELPERS ARE JUST RECOMMENDATIONS.
   // You can delete them and build your own logic from scratch.
 
   function getXY() {
     // It it not necessary to have a state to track the coordinates.
     // It's enough to know what index the "B" is at, to be able to calculate them.
+    let cords = [2,2]
+    if(currIndex % rowLength === 0){
+      cords[0] = 1
+    }else if(currIndex % rowLength === 1){
+      cords[0] = 2
+    }else{
+      cords[0] = 3
+    }
+    if(currIndex < rowLength){
+      cords[1] = 1
+    }else if(currIndex > (rowLength * 2)){
+      cords[1] = 3
+    }else{
+      cords[1] = 2
+    }
+    return cords
+
   }
 
   function getXYMessage() {
