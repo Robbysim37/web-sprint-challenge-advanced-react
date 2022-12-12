@@ -76,6 +76,7 @@ export default function AppFunctional(props) {
     }
     else if(evt.target.id === "right" && currIndex % rowLength !== rowLength - 1){
       setCurrIndex(currIndex + 1)
+
       setMoveCounter(moveCounter + 1)
       setMoveErrMsg(initialMessage)
     }else{
@@ -106,14 +107,14 @@ export default function AppFunctional(props) {
     .then(res => res.json())
     .then(res => setMoveErrMsg(res.message))
 
-    reset()
+    setUserEmail(initialEmail)
   }
 
   return (
     <div id="wrapper" className={props.className}>
       <div className="info">
         <h3 id="coordinates">Coordinates ({getXY()[0]}, {getXY()[1]})</h3>
-        <h3 id="steps">You moved {moveCounter} times</h3>
+        <h3 id="steps">You moved {moveCounter} time{moveCounter === 1 ? "" : "s"}</h3>
       </div>
       <div id="grid">
         {

@@ -13,7 +13,8 @@ export default class AppClass extends React.Component {
     this.state = {
       currIndex: initialIndex,
       moveCounter: initialSteps,
-      moveErrMsg: initialMessage
+      moveErrMsg: initialMessage,
+      userEmail: initialEmail
     }
   }
   // THE FOLLOWING HELPERS ARE JUST RECOMMENDATIONS.
@@ -47,7 +48,8 @@ export default class AppClass extends React.Component {
     this.setState({
       currIndex: initialIndex,
       moveCounter: initialSteps,
-      moveErrMsg: initialMessage})
+      moveErrMsg: initialMessage,
+      userEmail: initialEmail})
   }
 
   getNextIndex = (direction) => {
@@ -63,25 +65,29 @@ export default class AppClass extends React.Component {
     if(evt.target.id === "up" && this.state.currIndex > 2){
       this.setState({
         currIndex: this.state.currIndex - 3,
-        moveCounter: this.state.moveCounter + 1
+        moveCounter: this.state.moveCounter + 1,
+        moveErrMsg: initialMessage
       })
     }
     else if(evt.target.id === "down" && this.state.currIndex < 6){
       this.setState({
         currIndex: this.state.currIndex + 3,
-        moveCounter: this.state.moveCounter + 1
+        moveCounter: this.state.moveCounter + 1,
+        moveErrMsg: initialMessage
       })
     }
     else if(evt.target.id === "left" && this.state.currIndex % rowLength !== 0){
       this.setState({
         currIndex: this.state.currIndex - 1,
-        moveCounter: this.state.moveCounter + 1
+        moveCounter: this.state.moveCounter + 1,
+        moveErrMsg: initialMessage
       })
     }
     else if(evt.target.id === "right" && this.state.currIndex % rowLength !== rowLength - 1){
       this.setState({
         currIndex: this.state.currIndex + 1,
-        moveCounter: this.state.moveCounter + 1
+        moveCounter: this.state.moveCounter + 1,
+        moveErrMsg: initialMessage
       })
     }else{
       this.setState({
@@ -92,10 +98,35 @@ export default class AppClass extends React.Component {
 
   onChange = (evt) => {
     // You will need this to update the value of the input.
+
+    this.setState({
+      userEmail: evt.target.value
+    })
   }
 
   onSubmit = (evt) => {
     // Use a POST request to send a payload to the server.
+
+    evt.preventDefault()
+
+    fetch("http://localhost:9000/api/result" , {method:"POST",
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      x: this.getXY()[0],
+      y: this.getXY()[1],
+      steps: this.state.moveCounter,
+      email: this.state.userEmail})})
+    .then(res => res.json())
+    .then(res => this.setState({
+      moveErrMsg: res.message
+    }))
+
+    this.setState({
+      userEmail:initialEmail
+    })
   }
 
   render() {
@@ -104,7 +135,7 @@ export default class AppClass extends React.Component {
       <div id="wrapper" className={className}>
         <div className="info">
           <h3 id="coordinates">Coordinates ({this.getXY()[0]}, {this.getXY()[1]})</h3>
-          <h3 id="steps">You moved {this.state.moveCounter} times</h3>
+          <h3 id="steps">You moved {this.state.moveCounter} time{this.state.moveCounter === 1 ? "" : "s"}</h3>
         </div>
         <div id="grid">
           {
@@ -125,8 +156,9 @@ export default class AppClass extends React.Component {
           <button id="down" onClick={this.move}>DOWN</button>
           <button id="reset" onClick={this.reset}>reset</button>
         </div>
-        <form>
-          <input id="email" type="email" placeholder="type email"></input>
+        <form onSubmit={this.onSubmit}>
+          <input id="email" type="email" 
+          placeholder="type email" value={this.state.userEmail} onChange={this.onChange}></input>
           <input id="submit" type="submit"></input>
         </form>
       </div>
