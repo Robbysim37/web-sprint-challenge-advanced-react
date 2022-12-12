@@ -15,6 +15,7 @@ export default function AppFunctional(props) {
   const [currIndex,setCurrIndex] = useState(initialIndex)
   const [moveCounter, setMoveCounter] = useState(initialSteps)
   const [moveErrMsg, setMoveErrMsg] = useState(initialMessage)
+  const [userEmail,setUserEmail] = useState(initialEmail)
   // THE FOLLOWING HELPERS ARE JUST RECOMMENDATIONS.
   // You can delete them and build your own logic from scratch.
 
@@ -40,11 +41,12 @@ export default function AppFunctional(props) {
 
   }
 
-  function reset() {
+  function reset(evt) {
     // Use this helper to reset all states to their initial values.
     setCurrIndex(initialIndex)
     setMoveCounter(initialSteps)
     setMoveErrMsg(initialMessage)
+    setUserEmail(initialEmail)
   }
 
   function getNextIndex(direction) {
@@ -60,18 +62,22 @@ export default function AppFunctional(props) {
     if(evt.target.id === "up" && currIndex > 2){
       setCurrIndex(currIndex - 3)
       setMoveCounter(moveCounter + 1)
+      setMoveErrMsg(initialMessage)
     }
     else if(evt.target.id === "down" && currIndex < 6){
       setCurrIndex(currIndex + 3)
       setMoveCounter(moveCounter + 1)
+      setMoveErrMsg(initialMessage)
     }
     else if(evt.target.id === "left" && currIndex % rowLength !== 0){
       setCurrIndex(currIndex - 1)
       setMoveCounter(moveCounter + 1)
+      setMoveErrMsg(initialMessage)
     }
     else if(evt.target.id === "right" && currIndex % rowLength !== rowLength - 1){
       setCurrIndex(currIndex + 1)
       setMoveCounter(moveCounter + 1)
+      setMoveErrMsg(initialMessage)
     }else{
       setMoveErrMsg(`You can't go ${evt.target.id}`)
     }
@@ -79,23 +85,28 @@ export default function AppFunctional(props) {
 
   function onChange(evt) {
     // You will need this to update the value of the input.
+    setUserEmail(evt.target.value)
   }
 
   function onSubmit(evt) {
     // Use a POST request to send a payload to the server.
-    console.log(moveCounter)
-    console.log(getXY()[0])
-    console.log(getXY()[1])
 
     evt.preventDefault()
 
-    fetch("http://localhost:9000/api/result" , {method:"POST",body: {
-      x: 1,
-      y: 2,
-      steps: 3,
-      email: "Robbysim37@gmail.com"}})
+    fetch("http://localhost:9000/api/result" , {method:"POST",
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      x: getXY()[0],
+      y: getXY()[1],
+      steps: moveCounter,
+      email: userEmail})})
     .then(res => res.json())
-    .then(console.log)
+    .then(res => setMoveErrMsg(res.message))
+
+    reset()
   }
 
   return (
@@ -124,7 +135,7 @@ export default function AppFunctional(props) {
         <button id="reset" onClick={reset}>reset</button>
       </div>
       <form onSubmit={onSubmit}>
-        <input id="email" type="email" placeholder="type email"></input>
+        <input id="email" type="email" placeholder="type email" value={userEmail} onChange={onChange}></input>
         <input id="submit" type="submit"></input>
       </form>
     </div>
