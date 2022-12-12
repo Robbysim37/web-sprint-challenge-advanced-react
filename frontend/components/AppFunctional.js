@@ -83,19 +83,20 @@ export default function AppFunctional(props) {
 
   function onSubmit(evt) {
     // Use a POST request to send a payload to the server.
-    console.log(moveCounter)
-    console.log(getXY()[0])
-    console.log(getXY()[1])
+    console.log(JSON.stringify({x: 1 ,y: 2, steps: 3, email: "Robbysim37@gmail.com"}))
 
     evt.preventDefault()
 
-    fetch("http://localhost:9000/api/result" , {method:"POST",body: {
+    fetch("http://localhost:9000/api/result",
+    {method:`POST`,
+    body: JSON.stringify({
       x: 1,
       y: 2,
       steps: 3,
-      email: "Robbysim37@gmail.com"}})
+      email: "Robbysim37@gmail.com"})
+    })
     .then(res => res.json())
-    .then(console.log)
+    .then(res => console.log(res))
   }
 
   return (
