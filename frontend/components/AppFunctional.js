@@ -113,7 +113,7 @@ export default function AppFunctional(props) {
   return (
     <div id="wrapper" className={props.className}>
       <div className="info">
-        <h3 id="coordinates">Coordinates ({getXY()[0]}, {getXY()[1]})</h3>
+        <h3 data-testid ="coords" id="coordinates">Coordinates ({getXY()[0]}, {getXY()[1]})</h3>
         <h3 id="steps">You moved {moveCounter} time{moveCounter === 1 ? "" : "s"}</h3>
       </div>
       <div id="grid">
@@ -129,14 +129,14 @@ export default function AppFunctional(props) {
         <h3 id="message">{moveErrMsg}</h3>
       </div>
       <div id="keypad">
-        <button id="left" onClick={move}>LEFT</button>
-        <button id="up" onClick={move}>UP</button>
-        <button id="right" onClick={move}>RIGHT</button>
-        <button id="down" onClick={move}>DOWN</button>
+        <button data-testid="left" id="left" onClick={move}>LEFT</button>
+        <button data-testid="up"id="up" onClick={move}>UP</button>
+        <button data-testid="right"id="right" onClick={move}>RIGHT</button>
+        <button data-testid="down"id="down" onClick={move}>DOWN</button>
         <button id="reset" onClick={reset}>reset</button>
       </div>
       <form onSubmit={onSubmit}>
-        <input id="email" type="email" placeholder="type email" value={userEmail} onChange={onChange}></input>
+        <input data-testid="email" id="email" type="email" placeholder="type email" value={userEmail} onChange={onChange}></input>
         <input id="submit" type="submit"></input>
       </form>
     </div>
